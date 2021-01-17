@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     # Custom user model 
     'users',
 
+    # PDF Generator app
+    'pdf_generator',
+
     # Default django apps
     'django.contrib.admin',
     'django.contrib.auth',
