@@ -1,34 +1,37 @@
 from django.shortcuts import render, redirect
-from django.http import FileResponse
+from django.http import HttpResponse
+from django.conf import settings
 
 from .forms import ResumeForm
 
-import io
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.rl_config import defaultPageSize
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-
+from easy_pdf.views import PDFTemplateView
+import easy_pdf
 
 # Create your views here.
 
-def generate_pdf(name):
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer, pagesize="letter")
-    p.drawString(500,500,f"{name}")
-    p.showPage()
-    p.save()
-    buffer.seek(0)
-    return FileResponse(buffer, filename="hello.pdf")
+class HelloPDFView(PDFTemplateView):
+    template_name = 'pdf_generator/hello.html'
+
+    base_url = 'file://' + str(settings.STATIC_ROOT)
+    download_filename = 'hello.pdf'
+
+    def get_context_data(self, **kwargs):
+        return super(HelloPDFView, self).get_context_data(
+            pagesize='letter',
+            title='Hi there!',
+            **kwargs
+            )
 
 def index(request):
     form = ResumeForm()
     if request.method == 'POST':
         form = ResumeForm(data=request.POST)
         if form.is_valid():
-            return generate_pdf(name=request.POST.get('name'))
+            context = {
+            'name': request.POST.get('name'),
+            }
+            template = 'pdf_generator/hello.html'
+            return easy_pdf.rendering.render_to_pdf_response(request,template,context,using=None,download_filename='Hello.pdf',content_type='application/pdf',response_class=HttpResponse)
     context = {
     'form': form,
     }

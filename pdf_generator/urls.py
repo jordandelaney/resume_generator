@@ -8,5 +8,5 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # Generator PDF
-    path('generate-pdf/', views.generate_pdf, name='generate_pdf'),
+    path('generate-pdf/', views.HelloPDFView.as_view(), name="generate-pdf"),
 ]
