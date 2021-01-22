@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     # PDF Generator app
     'pdf_generator',
 
+    # Easy PDF
+    'easy_pdf',
+
     # Default django apps
     'django.contrib.admin',
     'django.contrib.auth',
